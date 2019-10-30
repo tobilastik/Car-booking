@@ -37,12 +37,12 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <DestinationButton />
-        <CurrentLocationButton />
         <MapView
           showsUserLocation={true}
           initialRegion={this.state.region}
           style={{flex: 1, zIndex: 0}}
         />
+
       </View>
     );
   }
