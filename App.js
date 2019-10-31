@@ -1,56 +1,45 @@
 import React from 'react';
-import MapView from 'react-native-maps';
-import {StyleSheet, View} from 'react-native';
-import * as Permissions from 'expo-permissions';
-import * as Location from 'expo-location';
-import DestinationButton from './components/DestinationButton';
-import {CurrentLocationButton} from './components/CurrentLocationButton';
+import {AppLoading} from 'expo';
+import {Asset} from 'expo-asset';
+import Navigation from './src/navigation/RootNavigation';
+
+// import all used images
+const images = [];
 
 export default class App extends React.Component {
-  constructor (props) {
-    super (props);
-    this.state = {
-      region: null,
-    };
-    this.getLocationsync ();
-  }
-
-  getLocationsync = async () => {
-    let {status} = await Permissions.askAsync (Permissions.LOCATION);
-    if (status != 'granted') {
-      console.log ('Location permission not granted');
-
-      let location = await Location.getCurrentPositionAsync ({
-        enableHighAccuracy: true,
-      });
-
-      let region = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.045,
-        longitudeDelta: 0.045,
-      };
-      this.setState ({region: region});
-    }
+  state = {
+    isLoadingComplete: false,
+    isAuthenticationReady: false,
+    isAuthenticated: false,
   };
-  render () {
-    return (
-      <View style={styles.container}>
-        <DestinationButton />
-        <MapView
-          showsUserLocation={true}
-          initialRegion={this.state.region}
-          style={{flex: 1, zIndex: 0}}
-        />
 
-      </View>
-    );
+  handleResourcesAsync = async () => {
+    // I am caching all the images
+    // for better performance on the app
+    console.disableYellowBox = true;
+
+    const cacheImages = images.map (image => {
+      return Asset.fromModule (image).downloadAsync ();
+    });
+
+    return Promise.all (cacheImages);
+  };
+
+  render () {
+    if (
+      !this.state.isLoadingComplete &&
+      !this.state.isAuthenticationReady &&
+      !this.props.skipLoadingScreen
+    ) {
+      return (
+        <AppLoading
+          startAsync={this.handleResourcesAsync}
+          onError={error => console.warn (error)}
+          onFinish={() => this.setState ({isLoadingComplete: true})}
+        />
+      );
+    } else {
+      return <Navigation />;
+    }
   }
 }
-
-const styles = StyleSheet.create ({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
