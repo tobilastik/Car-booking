@@ -28,7 +28,7 @@ const DashboardBottom = createBottomTabNavigator (
       screen: Home,
       navigationOptions: {
         tabBarLabel: 'Home',
-        activeTintColor: '#00852d',
+        activeTintColor: '#2b3a75',
         tabBarIcon: ({tintColor}) => (
           <Ionicons name="ios-home" color={tintColor} size={20} />
         ),
@@ -38,7 +38,7 @@ const DashboardBottom = createBottomTabNavigator (
       screen: Notes,
       navigationOptions: {
         tabBarLabel: 'Notes',
-        activeTintColor: '#00852d',
+        activeTintColor: '#2b3a75',
         tabBarIcon: ({tintColor}) => (
           <FontAwesome name="sticky-note" color={tintColor} size={20} />
         ),
@@ -48,7 +48,7 @@ const DashboardBottom = createBottomTabNavigator (
       screen: Network,
       navigationOptions: {
         tabBarLabel: 'Network',
-        activeTintColor: '#00852d',
+        activeTintColor: '#2b3a75',
         tabBarIcon: ({tintColor}) => (
           <Entypo name="network" color={tintColor} size={20} />
         ),
@@ -58,7 +58,7 @@ const DashboardBottom = createBottomTabNavigator (
       screen: Explore,
       navigationOptions: {
         tabBarLabel: 'Explore',
-        activeTintColor: '#00852d',
+        activeTintColor: '#2b3a75',
         tabBarIcon: ({tintColor}) => (
           <MaterialCommunityIcons
             name="google-maps"
@@ -71,7 +71,7 @@ const DashboardBottom = createBottomTabNavigator (
   },
   {
     tabBarOptions: {
-      activeTintColor: '#00852d',
+      activeTintColor: '#2b3a75',
     },
   }
 );

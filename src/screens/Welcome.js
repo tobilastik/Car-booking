@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import color from '../constants/color';
-import {Ionicons} from '@expo/vector-icons';
+import {AntDesign} from '@expo/vector-icons';
 
 const height = Dimensions.get ('window').height;
 
@@ -36,7 +36,7 @@ export default class Welcome extends Component {
               }}
             >
               <View style={styles.logo}>
-                <Ionicons name="ios-cash" size={60} color={color.navyblue} />
+                <AntDesign name="apple1" size={60} color={color.navyblue} />
               </View>
               <View style={{alignItems: 'center', top: height / 4}}>
                 <Text style={styles.text}>THE PITCH</Text>

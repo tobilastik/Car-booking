@@ -11,9 +11,9 @@ export default class AuthLoadingScreen extends Component {
     const userToken = await AsyncStorage.getItem ('token');
 
     if (userToken) {
-      this.props.navigation.navigate ('Dashboard');
-    } else {
       this.props.navigation.navigate ('Home');
+    } else {
+      this.props.navigation.navigate ('Auth');
     }
   };
 

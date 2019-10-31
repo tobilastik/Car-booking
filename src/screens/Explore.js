@@ -19,7 +19,7 @@ class Explore extends React.Component {
     super (props);
 
     this.state = {
-      showMap: false,
+      showMap: true,
       userLat: '',
       userLon: '',
     };
