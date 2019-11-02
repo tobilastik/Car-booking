@@ -1,35 +1,39 @@
 import React, {Component} from 'react';
 import {
   Text,
+  View,
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
   StyleSheet,
-  Dimensions,
   KeyboardAvoidingView,
   StatusBar,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
+import RadioButton from '../components/RadioButton';
 import color from '../constants/color';
-import {MaterialIcons} from '@expo/vector-icons';
 import {
-  firstName,
-  lastName,
-  email,
-  phoneNumber,
-  participant,
-  linkedIn,
   club,
   department,
   school,
   affiliation,
+  participant,
 } from '../store/actions/register.action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-const height = Dimensions.get ('window').height;
+const options = [
+  {
+    key: 'yes',
+    text: 'Yes',
+  },
+  {
+    key: 'no',
+    text: 'No',
+  },
+];
 
-class Signup extends Component {
+class FinalSignup extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -38,16 +42,16 @@ class Signup extends Component {
     super (props);
     this.state = {
       text: '',
-      password: '',
+      pitch: 'yes',
     };
   }
   render () {
     const {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      linkedIn,
+      club,
+      department,
+      school,
+      affiliation,
+      participant,
       register,
     } = this.props;
     return (
@@ -71,94 +75,78 @@ class Signup extends Component {
         >
           <ScrollView style={{padding: 10}}>
             <TextInput
-              autoCorrect="false"
               style={{marginVertical: 12}}
-              label="First Name"
-              value={register.firstName}
-              onChangeText={fname => firstName (fname)}
+              label="Affiliation"
+              value={register.affiliation}
+              onChangeText={text => affiliation (text)}
               onSubmitEditing={event => {
-                this.refs.lastName.focus ();
+                this.refs.School.focus ();
               }}
               returnKeyType="next"
             />
 
             <TextInput
-              autoCorrect="false"
-              ref="lastName"
               style={{marginVertical: 12}}
-              label="Last Name"
-              value={register.lastName}
-              onChangeText={lname => lastName (lname)}
+              label="School"
+              value={register.school}
+              onChangeText={text => school (text)}
               onSubmitEditing={event => {
-                this.refs.phoneNumber.focus ();
+                this.refs.Club.focus ();
               }}
               returnKeyType="next"
             />
 
             <TextInput
-              autoCorrect="false"
-              keyboardType={'numbers-and-punctuation'}
-              ref="phoneNumber"
               style={{marginVertical: 12}}
-              label="Phone Number"
-              value={register.phoneNumber}
-              onChangeText={pnum => phoneNumber (pnum)}
+              label="Club"
+              ref="Club"
+              value={register.club}
+              onChangeText={text => club (text)}
               onSubmitEditing={event => {
-                this.refs.Email.focus ();
-              }}
-              returnKeyType="next"
-            />
-
-            <TextInput
-              autoCorrect="false"
-              autoCapitalize="none"
-              ref="Email"
-              keyboardType={'email-address'}
-              style={{marginVertical: 12}}
-              label="Email"
-              value={register.email}
-              onChangeText={mail => email (mail)}
-              onSubmitEditing={event => {
-                this.refs.Password.focus ();
+                this.refs.Department.focus ();
               }}
               returnKeyType="next"
             />
             <TextInput
-              autoCorrect="false"
-              ref="Password"
-              secureTextEntry
+              ref="Department"
               style={{marginVertical: 12}}
-              label="Password"
-              value={this.state.password}
-              onChangeText={password => this.setState ({password})}
-              onSubmitEditing={event => {
-                this.refs.LinkedIn.focus ();
-              }}
-              returnKeyType="next"
-            />
-            <TextInput
-              autoCorrect="false"
-              ref="LinkedIn"
-              style={{marginVertical: 12}}
-              label="LinkedIn Username"
-              value={register.linkedIn}
-              onChangeText={link => linkedIn (link)}
+              label="Department"
+              value={register.department}
+              onChangeText={text => department (text)}
               returnKeyType="done"
             />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 16,
+              }}
+            >
+              <Text style={{fontSize: 16, color: 'gray', fontWeight: 'bold'}}>
+                The Pitch Participant?
+              </Text>
+              <RadioButton
+                //value={loan.indebtedness}
+                options={options}
+                pitch={register.participant}
+                handleRadioChange={pitch => {
+                  participant (pitch);
+                }}
+              />
 
+            </View>
             <TouchableOpacity
+              onPress={() => this.props.navigation.navigate ('Home')}
               underlayColor="transparent"
               style={styles.nextButton}
-              onPress={() => this.props.navigation.navigate ('FinalSignup')}
             >
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', color: color.white}}
               >
-                Next
+                Register
               </Text>
-              <MaterialIcons name="navigate-next" size={20} color="white" />
-            </TouchableOpacity>
 
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -175,17 +163,18 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators (
     {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      linkedIn,
+      club,
+      department,
+      school,
+      affiliation,
+      participant,
     },
     dispatch
   );
 }
 
-export default connect (mapStateToProps, mapDispatchToProps) (Signup);
+export default connect (mapStateToProps, mapDispatchToProps) (FinalSignup);
+
 const styles = StyleSheet.create ({
   container: {
     flex: 1,
@@ -200,9 +189,10 @@ const styles = StyleSheet.create ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'flex-end',
     height: 50,
-    width: 80,
+    width: '80%',
     borderRadius: 10,
+    marginTop: 22,
+    alignSelf: 'center',
   },
 });

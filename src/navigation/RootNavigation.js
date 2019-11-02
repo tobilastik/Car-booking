@@ -21,6 +21,7 @@ import {
   Entypo,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
+import FinalSignup from '../screens/FinalSignup';
 
 const DashboardBottom = createBottomTabNavigator (
   {
@@ -83,6 +84,7 @@ const Auth = createStackNavigator (
     Signup: {screen: Signup},
     Forgot: {screen: Forgot},
     ResetPassword: {screen: ResetPassword},
+    FinalSignup: {screen: FinalSignup},
   },
   {
     initialRouteName: 'Welcome',

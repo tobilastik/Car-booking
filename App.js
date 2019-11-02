@@ -2,6 +2,9 @@ import React from 'react';
 import {AppLoading} from 'expo';
 import {Asset} from 'expo-asset';
 import Navigation from './src/navigation/RootNavigation';
+import {store, persistor} from './src/store/store';
+import {PersistGate} from 'redux-persist/integration/react';
+import {Provider} from 'react-redux';
 
 // import all used images
 const images = [];
@@ -39,7 +42,17 @@ export default class App extends React.Component {
         />
       );
     } else {
-      return <Navigation />;
+      return (
+        <Provider store={store}>
+          <PersistGate persistor={persistor} loading={null}>
+            <Navigation />
+          </PersistGate>
+        </Provider>
+      );
     }
   }
 }
+
+store.subscribe (() => {
+  console.log ('Store Change: ', store.getState ());
+});

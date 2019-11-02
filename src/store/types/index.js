@@ -1,0 +1,12 @@
+export const FIRST_NAME = 'FIRST_NAME';
+export const LAST_NAME = 'LAST_NAME';
+export const PHONE_NUMBER = 'PHONE_NUMBER';
+export const EMAIL = 'EMAIL';
+export const LINKEDIN = 'LINKEDIN';
+export const AFFILIATION = 'AFFILIATION';
+export const SCHOOL = 'SCHOOL';
+export const CLUB = 'CLUB';
+export const DEPARTMENT = 'DEPARTMENT';
+export const PARTICIPANT = 'PARTICIPANT';
+export const NOTES = 'NOTES';
+export const TOGGLE_NOTES = 'TOGGLE_NOTES';

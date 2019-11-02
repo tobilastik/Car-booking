@@ -54,7 +54,7 @@ export default class Welcome extends Component {
               </View>
               <View style={{position: 'absolute', top: height - 150}}>
                 <TouchableHighlight
-                  onPress={() => this.props.navigation.navigate ('Home')}
+                  onPress={() => this.props.navigation.navigate ('Login')}
                   underlayColor="transparent"
                   style={styles.signinButton}
                 >
@@ -64,7 +64,7 @@ export default class Welcome extends Component {
                 </TouchableHighlight>
 
                 <TouchableHighlight
-                  onPress={() => this.props.navigation.navigate ('Main')}
+                  onPress={() => this.props.navigation.navigate ('Signup')}
                   underlayColor="transparent"
                   style={styles.signinButton}
                 >
