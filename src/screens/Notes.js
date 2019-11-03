@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {StatusBar, View, StyleSheet} from 'react-native';
 import AddNotes from '../containers/AddNotes';
 import VisibleNotes from '../containers/VisibleNotes';
+import PitchHeader from './Network';
 
 export default class Notes extends Component {
   render () {
     return (
       <View style={styles.container}>
+        <PitchHeader />
         <AddNotes />
-
         <View>
           <VisibleNotes />
         </View>
@@ -20,6 +21,7 @@ export default class Notes extends Component {
 const styles = StyleSheet.create ({
   container: {
     flex: 1,
-    paddingTop: 40,
+    marginTop: StatusBar.currentHeight,
+    //paddingTop: 40,
   },
 });

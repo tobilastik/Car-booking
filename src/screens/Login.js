@@ -44,6 +44,7 @@ export default class Login extends Component {
         >
           <ScrollView style={{padding: 10}}>
             <TextInput
+              mode="outlined"
               keyboardType={'email-address'}
               style={{marginVertical: 12}}
               label="Email"
@@ -52,6 +53,7 @@ export default class Login extends Component {
             />
 
             <TextInput
+              mode="outlined"
               secureTextEntry
               style={{marginVertical: 12}}
               label="Password"

@@ -5,6 +5,7 @@ import Navigation from './src/navigation/RootNavigation';
 import {store, persistor} from './src/store/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider} from 'react-redux';
+import {Provider as PaperProvider} from 'react-native-paper';
 
 // import all used images
 const images = [];
@@ -45,7 +46,9 @@ export default class App extends React.Component {
       return (
         <Provider store={store}>
           <PersistGate persistor={persistor} loading={null}>
-            <Navigation />
+            <PaperProvider>
+              <Navigation />
+            </PaperProvider>
           </PersistGate>
         </Provider>
       );

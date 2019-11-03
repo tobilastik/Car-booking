@@ -71,6 +71,7 @@ class Signup extends Component {
         >
           <ScrollView style={{padding: 10}}>
             <TextInput
+              mode="outlined"
               autoCorrect="false"
               style={{marginVertical: 12}}
               label="First Name"
@@ -83,6 +84,7 @@ class Signup extends Component {
             />
 
             <TextInput
+              mode="outlined"
               autoCorrect="false"
               ref="lastName"
               style={{marginVertical: 12}}
@@ -96,6 +98,7 @@ class Signup extends Component {
             />
 
             <TextInput
+              mode="outlined"
               autoCorrect="false"
               keyboardType={'numbers-and-punctuation'}
               ref="phoneNumber"
@@ -110,6 +113,7 @@ class Signup extends Component {
             />
 
             <TextInput
+              mode="outlined"
               autoCorrect="false"
               autoCapitalize="none"
               ref="Email"
@@ -124,6 +128,7 @@ class Signup extends Component {
               returnKeyType="next"
             />
             <TextInput
+              mode="outlined"
               autoCorrect="false"
               ref="Password"
               secureTextEntry
@@ -137,6 +142,7 @@ class Signup extends Component {
               returnKeyType="next"
             />
             <TextInput
+              mode="outlined"
               autoCorrect="false"
               ref="LinkedIn"
               style={{marginVertical: 12}}

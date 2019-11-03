@@ -5,12 +5,14 @@ import {
   Text,
   View,
   TouchableHighlight,
+  StatusBar,
 } from 'react-native';
 import * as Location from 'expo-location';
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import * as Permissions from 'expo-permissions';
 import {device} from '../constants';
 import colors from '../constants/color';
+import PitchHeader from '../components/PitchHeader';
 
 const {PROVIDER_GOOGLE} = MapView;
 
@@ -22,6 +24,17 @@ class Explore extends React.Component {
       showMap: true,
       userLat: '',
       userLon: '',
+      //region:
+      markers: [
+        {
+          latlng: {
+            latitude: 7.5187,
+            longitude: 4.5220,
+          },
+          title: 'THE PITCH VENUE',
+          description: 'Oduduwa Hall',
+        },
+      ],
     };
   }
 
@@ -57,19 +70,36 @@ class Explore extends React.Component {
 
     return (
       <View style={styles.container}>
+
         {showMap &&
-          <MapView
-            followsUserLocation
-            provider={PROVIDER_GOOGLE}
-            region={{
-              latitude: userLat,
-              longitude: userLon,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            showsUserLocation
-            style={styles.map}
-          />}
+          <View style={{marginTop: StatusBar.currentHeight}}>
+            <MapView
+              region={this.state.region}
+              mapType={'hybrid'}
+              followsUserLocation
+              provider={PROVIDER_GOOGLE}
+              region={{
+                latitude: userLat,
+                longitude: userLon,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+              showsUserLocation
+              style={styles.map}
+            >
+
+              {this.state.markers.map (marker => (
+                <Marker
+                  coordinate={marker.latlng}
+                  title={marker.title}
+                  description={marker.description}
+                  image={{uri: `http://sfc.oauife.edu.ng/images/logo.png`}}
+                />
+              ))}
+
+            </MapView>
+            <PitchHeader />
+          </View>}
 
         {!showMap &&
           <View style={styles.containerNoLocation}>

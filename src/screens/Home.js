@@ -9,8 +9,12 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Modal,
+  SafeAreaView,
 } from 'react-native';
 import color from '../constants/color';
+import {Provider} from 'react-native-paper';
+import PitchHeader from '../components/PitchHeader';
 
 const {height, width} = Dimensions.get ('window');
 
@@ -19,6 +23,7 @@ class Home extends Component {
     super (props);
     this.state = {
       activeIndex: 0,
+      moreButton: false,
     };
   }
   componentWillMount () {
@@ -66,9 +71,22 @@ class Home extends Component {
       );
     }
   };
+
+  _openMenu = () => this.setState ({moreButton: true});
+
+  _closeMenu = () => this.setState ({moreButton: false});
+
   render () {
     return (
-      <View style={{flex: 1, marginTop: Platform.OS == 'android' ? 0 : null}}>
+      <View
+        style={{
+          flex: 1,
+          marginTop: Platform.OS == 'android' ? 0 : null,
+          backgroundColor: '#f8f8f8',
+          marginTop: StatusBar.currentHeight,
+        }}
+      >
+        <PitchHeader />
         <View>
           <View style={{alignItems: 'center', padding: 10, marginTop: 20}}>
             <Image
@@ -125,10 +143,12 @@ class Home extends Component {
             </View>
             <View>
               {this.renderHome ()}
+
             </View>
           </View>
 
         </View>
+
       </View>
     );
   }
@@ -141,5 +161,15 @@ const styles = StyleSheet.create ({
     marginBottom: 15,
     backgroundColor: color.inputgray,
     height: '100%',
+  },
+  modalContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 50,
+    backgroundColor: 'red',
+  },
+  modalStyle: {
+    // marginLeft: width - 30,
+    //top: -80,
   },
 });
