@@ -11,4 +11,5 @@ export default {
   inputgray: '#e4e4e4',
   faintBlue: '#2680EB',
   lightgreen: '#CDE45D',
+  red: 'red',
 };

@@ -22,11 +22,32 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import FinalSignup from '../screens/FinalSignup';
+import About from '../screens/About';
+import Conference from '../screens/Conference';
+import Thepitch from '../screens/Thepitch';
+import Faqs from '../screens/Faqs';
+import Howto from '../screens/Howto';
+
+const MoreScreen = createStackNavigator ({
+  Home: {
+    screen: Home,
+    navigationOptions: ({navigation}) => {
+      return {
+        header: null,
+      };
+    },
+  },
+  About: {screen: About},
+  Conference: {screen: Conference},
+  Thepitch: {screen: Thepitch},
+  Faqs: {screen: Faqs},
+  Howto: {screen: Howto},
+});
 
 const DashboardBottom = createBottomTabNavigator (
   {
     Home: {
-      screen: Home,
+      screen: MoreScreen,
       navigationOptions: {
         tabBarLabel: 'Home',
         activeTintColor: '#2b3a75',
@@ -76,7 +97,6 @@ const DashboardBottom = createBottomTabNavigator (
     },
   }
 );
-
 const Auth = createStackNavigator (
   {
     Welcome: {screen: Welcome},

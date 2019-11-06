@@ -3,8 +3,9 @@ import {StyleSheet} from 'react-native';
 import {Header, Left, Body, Right, Title} from 'native-base';
 import {Button, Menu, Divider} from 'react-native-paper';
 import {Feather} from '@expo/vector-icons';
+import {withNavigation} from 'react-navigation';
 
-export default class HeaderIconExample extends Component {
+class PitchHeader extends Component {
   state = {
     moreButton: false,
   };
@@ -39,12 +40,37 @@ export default class HeaderIconExample extends Component {
             }
           >
 
-            <Menu.Item onPress={() => {}} title="About Us" />
-            <Menu.Item onPress={() => {}} title="Our Conference " />
-            <Menu.Item onPress={() => {}} title="The Pitch" />
-            <Menu.Item onPress={() => {}} title="FAQs" />
+            <Menu.Item
+              onPress={() => {
+                this.props.navigation.navigate ('About');
+              }}
+              title="About Us"
+            />
+            <Menu.Item
+              onPress={() => {
+                this.props.navigation.navigate ('Conference');
+              }}
+              title="Our Conference "
+            />
+            <Menu.Item
+              onPress={() => {
+                this.props.navigation.navigate ('Thepitch');
+              }}
+              title="The Pitch"
+            />
+            <Menu.Item
+              onPress={() => {
+                this.props.navigation.navigate ('Faqs');
+              }}
+              title="FAQs"
+            />
             <Divider />
-            <Menu.Item onPress={() => {}} title="How to use the App" />
+            <Menu.Item
+              onPress={() => {
+                this.props.navigation.navigate ('Howto');
+              }}
+              title="How to use the App"
+            />
 
           </Menu>
         </Right>
@@ -65,3 +91,5 @@ const styles = StyleSheet.create ({
     //top: -80,
   },
 });
+
+export default withNavigation (PitchHeader);

@@ -17,17 +17,11 @@ import {
   lastName,
   email,
   phoneNumber,
-  participant,
   linkedIn,
-  club,
-  department,
-  school,
-  affiliation,
 } from '../store/actions/register.action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-
-const height = Dimensions.get ('window').height;
+import * as Font from 'expo-font';
 
 class Signup extends Component {
   static navigationOptions = {
@@ -39,8 +33,16 @@ class Signup extends Component {
     this.state = {
       text: '',
       password: '',
+      fontLoaded: false,
     };
   }
+  componentDidMount = async () => {
+    await Font.loadAsync ({
+      PlayFair: require ('../assets/fonts/PlayfairDisplaySC-Regular.ttf'),
+    });
+    this.setState ({fontLoaded: true});
+  };
+
   render () {
     const {
       firstName,
@@ -52,23 +54,25 @@ class Signup extends Component {
     } = this.props;
     return (
       <SafeAreaView style={styles.container}>
-
-        <Text
-          style={{
-            color: 'gray',
-            fontWeight: 'normal',
-            fontSize: 30,
-            alignSelf: 'center',
-          }}
-        >
-          Sign Up
-        </Text>
-
+        {this.state.fontLoaded
+          ? <Text
+              style={{
+                color: 'gray',
+                fontWeight: 'normal',
+                fontSize: 40,
+                alignSelf: 'center',
+                fontFamily: 'PlayFair',
+              }}
+            >
+              Sign Up
+            </Text>
+          : null}
         <KeyboardAvoidingView
           style={styles.keyboard}
           behavior="padding"
           enabled
         >
+
           <ScrollView style={{padding: 10}}>
             <TextInput
               mode="outlined"

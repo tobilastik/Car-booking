@@ -10,8 +10,12 @@ import {
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import color from '../constants/color';
+import * as Font from 'expo-font';
 
 export default class Login extends Component {
+  state = {
+    fontLoaded: false,
+  };
   static navigationOptions = {
     header: null,
   };
@@ -22,21 +26,31 @@ export default class Login extends Component {
       text: '',
     };
   }
+
+  componentDidMount = async () => {
+    await Font.loadAsync ({
+      PlayFair: require ('../assets/fonts/PlayfairDisplaySC-Regular.ttf'),
+    });
+    this.setState ({fontLoaded: true});
+  };
+
   render () {
     return (
       <SafeAreaView style={styles.container}>
 
-        <Text
-          style={{
-            color: 'gray',
-            fontWeight: 'normal',
-            fontSize: 30,
-            alignSelf: 'center',
-          }}
-        >
-          Sign In
-        </Text>
-
+        {this.state.fontLoaded
+          ? <Text
+              style={{
+                color: 'gray',
+                fontWeight: 'normal',
+                fontSize: 40,
+                alignSelf: 'center',
+                fontFamily: 'PlayFair',
+              }}
+            >
+              Sign In
+            </Text>
+          : null}
         <KeyboardAvoidingView
           style={styles.keyboard}
           behavior="padding"

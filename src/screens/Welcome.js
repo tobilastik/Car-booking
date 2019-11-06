@@ -7,15 +7,27 @@ import {
   View,
   TouchableHighlight,
   Dimensions,
+  Image,
 } from 'react-native';
 import color from '../constants/color';
-import {AntDesign} from '@expo/vector-icons';
+import * as Font from 'expo-font';
 
 const height = Dimensions.get ('window').height;
 
 export default class Welcome extends Component {
+  state = {
+    fontLoaded: false,
+  };
   static navigationOptions = {
     header: null,
+  };
+
+  componentDidMount = async () => {
+    await Font.loadAsync ({
+      DancingScript: require ('../assets/fonts/DancingScript-Regular.ttf'),
+      Fredrick: require ('../assets/fonts/FrederickatheGreat-Regular.ttf'),
+    });
+    this.setState ({fontLoaded: true});
   };
 
   render () {
@@ -36,21 +48,29 @@ export default class Welcome extends Component {
               }}
             >
               <View style={styles.logo}>
-                <AntDesign name="apple1" size={60} color={color.navyblue} />
+                <Image
+                  source={require ('../assets/images/logo.png')}
+                  style={{height: 100, width: 100, borderRadius: 10}}
+                />
               </View>
               <View style={{alignItems: 'center', top: height / 4}}>
-                <Text style={styles.text}>THE PITCH</Text>
-                <Text
-                  style={{
-                    marginTop: 42,
-                    color: 'white',
-                    alignSelf: 'center',
-                    textAlign: 'center',
-                    fontSize: 18,
-                  }}
-                >
-                  Welcome to The Pitch onboarding app.
-                </Text>
+                {this.state.fontLoaded
+                  ? <Text style={styles.text}>THE PITCH</Text>
+                  : null}
+                {this.state.fontLoaded
+                  ? <Text
+                      style={{
+                        marginTop: 42,
+                        color: 'white',
+                        alignSelf: 'center',
+                        textAlign: 'center',
+                        fontSize: 30,
+                        fontFamily: 'DancingScript',
+                      }}
+                    >
+                      Welcome to the pitch onboarding app.
+                    </Text>
+                  : null}
               </View>
               <View style={{position: 'absolute', top: height - 150}}>
                 <TouchableHighlight
@@ -106,15 +126,13 @@ const styles = StyleSheet.create ({
 
   text: {
     color: '#fff',
-    fontSize: 40,
-    fontWeight: '600',
+    fontSize: 60,
+    fontFamily: 'Fredrick',
   },
   logo: {
     height: 100,
     width: 100,
     top: 30,
-    borderRadius: 50,
-    backgroundColor: color.white,
     justifyContent: 'center',
     alignItems: 'center',
   },

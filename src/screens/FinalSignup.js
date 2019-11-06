@@ -21,6 +21,7 @@ import {
 } from '../store/actions/register.action';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import * as Font from 'expo-font';
 
 const options = [
   {
@@ -43,8 +44,16 @@ class FinalSignup extends Component {
     this.state = {
       text: '',
       pitch: 'yes',
+      fontLoaded: false,
     };
   }
+  componentDidMount = async () => {
+    await Font.loadAsync ({
+      PlayFair: require ('../assets/fonts/PlayfairDisplaySC-Regular.ttf'),
+    });
+    this.setState ({fontLoaded: true});
+  };
+
   render () {
     const {
       club,
@@ -56,17 +65,19 @@ class FinalSignup extends Component {
     } = this.props;
     return (
       <SafeAreaView style={styles.container}>
-
-        <Text
-          style={{
-            color: 'gray',
-            fontWeight: 'normal',
-            fontSize: 30,
-            alignSelf: 'center',
-          }}
-        >
-          Sign Up
-        </Text>
+        {this.state.fontLoaded
+          ? <Text
+              style={{
+                color: 'gray',
+                fontWeight: 'normal',
+                fontSize: 40,
+                alignSelf: 'center',
+                fontFamily: 'PlayFair',
+              }}
+            >
+              Sign Up
+            </Text>
+          : null}
 
         <KeyboardAvoidingView
           style={styles.keyboard}
@@ -75,6 +86,7 @@ class FinalSignup extends Component {
         >
           <ScrollView style={{padding: 10}}>
             <TextInput
+              mode="outlined"
               style={{marginVertical: 12}}
               label="Affiliation"
               value={register.affiliation}
@@ -86,6 +98,8 @@ class FinalSignup extends Component {
             />
 
             <TextInput
+              mode="outlined"
+              ref="School"
               style={{marginVertical: 12}}
               label="School"
               value={register.school}
@@ -97,6 +111,7 @@ class FinalSignup extends Component {
             />
 
             <TextInput
+              mode="outlined"
               style={{marginVertical: 12}}
               label="Club"
               ref="Club"
@@ -108,6 +123,7 @@ class FinalSignup extends Component {
               returnKeyType="next"
             />
             <TextInput
+              mode="outlined"
               ref="Department"
               style={{marginVertical: 12}}
               label="Department"
