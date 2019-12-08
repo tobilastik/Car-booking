@@ -64,7 +64,7 @@ export default class Welcome extends Component {
                         color: 'white',
                         alignSelf: 'center',
                         textAlign: 'center',
-                        fontSize: 30,
+                        fontSize: 26,
                         fontFamily: 'DancingScript',
                       }}
                     >
@@ -126,8 +126,9 @@ const styles = StyleSheet.create ({
 
   text: {
     color: '#fff',
-    fontSize: 60,
+    fontSize: 30,
     fontFamily: 'Fredrick',
+    alignSelf: 'center',
   },
   logo: {
     height: 100,

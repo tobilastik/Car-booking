@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, AsyncStorage} from 'react-native';
 import {Header, Left, Body, Right, Title} from 'native-base';
 import {Button, Menu, Divider} from 'react-native-paper';
 import {Feather} from '@expo/vector-icons';
 import {withNavigation} from 'react-navigation';
+import * as firebase from 'firebase';
 
 class PitchHeader extends Component {
   state = {
@@ -14,6 +15,12 @@ class PitchHeader extends Component {
 
   _closeMenu = () => this.setState ({moreButton: false});
 
+  logout = async () => {
+    await AsyncStorage.removeItem ('id');
+    setTimeout (() => {
+      this.props.navigation.navigate ('Login');
+    }, 100);
+  };
   render () {
     return (
       <Header style={{backgroundColor: 'white'}} androidStatusBarColor="white">
@@ -40,38 +47,7 @@ class PitchHeader extends Component {
             }
           >
 
-            <Menu.Item
-              onPress={() => {
-                this.props.navigation.navigate ('About');
-              }}
-              title="About Us"
-            />
-            <Menu.Item
-              onPress={() => {
-                this.props.navigation.navigate ('Conference');
-              }}
-              title="Our Conference "
-            />
-            <Menu.Item
-              onPress={() => {
-                this.props.navigation.navigate ('Thepitch');
-              }}
-              title="The Pitch"
-            />
-            <Menu.Item
-              onPress={() => {
-                this.props.navigation.navigate ('Faqs');
-              }}
-              title="FAQs"
-            />
-            <Divider />
-            <Menu.Item
-              onPress={() => {
-                this.props.navigation.navigate ('Howto');
-              }}
-              title="How to use the App"
-            />
-
+            <Menu.Item onPress={() => this.logout ()} title="Log Out" />
           </Menu>
         </Right>
       </Header>

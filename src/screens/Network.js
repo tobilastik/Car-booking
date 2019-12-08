@@ -43,6 +43,7 @@ class Network extends Component {
 
   handleBarCodeScanned = ({type, data}) => {
     this.setState ({QrPress: false, scanned: true, lastScannedUrl: data});
+    console.log (data);
   };
 
   renderBarcodeReader = () => {

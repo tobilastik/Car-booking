@@ -7,14 +7,22 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   StatusBar,
+  AsyncStorage,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import color from '../constants/color';
 import * as Font from 'expo-font';
+import {email} from '../store/actions/register.action';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import firebase from '../config/firebase';
+import Loader from '../components/Loader';
+import {withNavigation} from 'react-navigation';
 
-export default class Login extends Component {
+class Login extends Component {
   state = {
     fontLoaded: false,
+    isLoading: false,
   };
   static navigationOptions = {
     header: null,
@@ -23,10 +31,17 @@ export default class Login extends Component {
   constructor (props) {
     super (props);
     this.state = {
-      text: '',
+      password: '',
+      token: '',
     };
   }
-
+  saveToken = async (item, selectedValue) => {
+    try {
+      await AsyncStorage.setItem (item, selectedValue);
+    } catch (error) {
+      console.log ('Async error', error.message);
+    }
+  };
   componentDidMount = async () => {
     await Font.loadAsync ({
       PlayFair: require ('../assets/fonts/PlayfairDisplaySC-Regular.ttf'),
@@ -34,7 +49,32 @@ export default class Login extends Component {
     this.setState ({fontLoaded: true});
   };
 
+  handleSignIn = (email, password) => {
+    this.setState ({isLoading: true});
+    try {
+      firebase
+        .auth ()
+        .signInWithEmailAndPassword (email, password)
+        .then (user => {
+          if (user) {
+            this.props.navigation.navigate ('Home');
+            //console.log ('nananna', user);
+
+            //this.saveToken ('id', user.uid);
+          } else {
+            console.log (error);
+          }
+        });
+    } catch ({error}) {
+      if (error) {
+        alert ('error');
+      }
+      console.log (error.toString (error));
+    }
+  };
+
   render () {
+    const {email, register} = this.props;
     return (
       <SafeAreaView style={styles.container}>
 
@@ -59,24 +99,31 @@ export default class Login extends Component {
           <ScrollView style={{padding: 10}}>
             <TextInput
               mode="outlined"
+              autoCorrect="false"
+              autoCapitalize="none"
+              ref="Email"
               keyboardType={'email-address'}
               style={{marginVertical: 12}}
               label="Email"
-              value={this.state.text}
-              onChangeText={text => this.setState ({text})}
+              value={register.email}
+              onChangeText={mail => email (mail)}
             />
-
             <TextInput
               mode="outlined"
               secureTextEntry
               style={{marginVertical: 12}}
               label="Password"
-              value={this.state.text}
-              onChangeText={text => this.setState ({text})}
+              value={this.state.password}
+              onChangeText={password => this.setState ({password})}
             />
+            {/* {this.state} */}
 
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate ('Home')}
+              onPress={() =>
+                this.handleSignIn (
+                  this.props.register.email,
+                  this.state.password
+                )}
               underlayColor="transparent"
               style={styles.nextButton}
             >
@@ -89,10 +136,28 @@ export default class Login extends Component {
             </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
+        {this.state.isLoading ? <Loader /> : null}
       </SafeAreaView>
     );
   }
 }
+
+function mapStateToProps (state) {
+  return {
+    register: state.register,
+  };
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators (
+    {
+      email,
+    },
+    dispatch
+  );
+}
+
+export default connect (mapStateToProps, mapDispatchToProps) (Login);
 
 const styles = StyleSheet.create ({
   container: {

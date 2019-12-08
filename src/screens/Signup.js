@@ -5,13 +5,16 @@ import {
   ScrollView,
   SafeAreaView,
   StyleSheet,
-  Dimensions,
   KeyboardAvoidingView,
   StatusBar,
+  AsyncStorage,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import color from '../constants/color';
-import {MaterialIcons} from '@expo/vector-icons';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as Font from 'expo-font';
+import * as firebase from 'firebase';
 import {
   firstName,
   lastName,
@@ -19,9 +22,6 @@ import {
   phoneNumber,
   linkedIn,
 } from '../store/actions/register.action';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import * as Font from 'expo-font';
 
 class Signup extends Component {
   static navigationOptions = {
@@ -34,14 +34,86 @@ class Signup extends Component {
       text: '',
       password: '',
       fontLoaded: false,
+      passwordError: '',
+      emailError: '',
+      phoneError: '',
     };
   }
+  saveToken = async (item, selectedValue) => {
+    try {
+      await AsyncStorage.setItem (item, selectedValue);
+    } catch (error) {
+      console.log ('Async error', error.message);
+    }
+  };
+
   componentDidMount = async () => {
     await Font.loadAsync ({
       PlayFair: require ('../assets/fonts/PlayfairDisplaySC-Regular.ttf'),
     });
     this.setState ({fontLoaded: true});
   };
+
+  signUp = (email, password) => {
+    this.setState ({
+      passwordError: '',
+      emailError: '',
+      phoneError: '',
+    });
+    const {phoneNumber, linkedIn, register} = this.props;
+
+    if (register.email != '') {
+      if (this.validateEmail (register.email)) {
+        if (register.phoneNumber != '') {
+          if ((register.phoneNumber.length = 11)) {
+            if (this.state.password != '') {
+              if (
+                this.state.password.length >= 6 &&
+                this.state.password.length <= 16
+              ) {
+                this.signUpUsers (
+                  this.props.register.email,
+                  this.state.password
+                );
+              } else {
+                this.setState ({
+                  passwordError: 'Password length should be between 6 and 16 characters',
+                });
+              }
+            } else {
+              this.setState ({
+                phoneError: 'Please enter a valid phone number',
+              });
+            }
+          } else {
+            this.setState ({passwordError: 'Password required!!!'});
+          }
+        } else {
+          this.setState ({phoneError: 'Phone number is required!!!'});
+        }
+      } else {
+        this.setState ({emailError: 'Please enter a valid email address!!!'});
+      }
+    } else {
+      this.setState ({emailError: 'Email address is required!!!'});
+    }
+  };
+  //Validate email with regex
+  validateEmail (userEmail) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test (String (userEmail).toLowerCase ());
+  }
+
+  async signUpUsers (email, password) {
+    try {
+      firebase.auth ().createUserWithEmailAndPassword (email, password);
+      firebase.auth ().onAuthStateChanged (user => {
+        this.props.navigation.navigate ('Home');
+      });
+    } catch (error) {
+      console.log (error.toString (error));
+    }
+  }
 
   render () {
     const {
@@ -52,6 +124,7 @@ class Signup extends Component {
       linkedIn,
       register,
     } = this.props;
+    const {phoneError, emailError, passwordError} = this.state;
     return (
       <SafeAreaView style={styles.container}>
         {this.state.fontLoaded
@@ -77,29 +150,33 @@ class Signup extends Component {
             <TextInput
               mode="outlined"
               autoCorrect="false"
+              autoCapitalize="none"
+              ref="Email"
+              keyboardType={'email-address'}
               style={{marginVertical: 12}}
-              label="First Name"
-              value={register.firstName}
-              onChangeText={fname => firstName (fname)}
+              label="Email"
+              value={register.email}
+              onChangeText={mail => email (mail)}
               onSubmitEditing={event => {
-                this.refs.lastName.focus ();
+                this.refs.LinkedIn.focus ();
               }}
               returnKeyType="next"
             />
-
+            {emailError != ''
+              ? <Text style={{color: 'red'}}> {emailError}</Text>
+              : null}
             <TextInput
               mode="outlined"
               autoCorrect="false"
-              ref="lastName"
+              secureTextEntry
               style={{marginVertical: 12}}
-              label="Last Name"
-              value={register.lastName}
-              onChangeText={lname => lastName (lname)}
-              onSubmitEditing={event => {
-                this.refs.phoneNumber.focus ();
-              }}
-              returnKeyType="next"
+              label="Password"
+              value={this.state.password}
+              onChangeText={password => this.setState ({password})}
             />
+            {passwordError != ''
+              ? <Text style={{color: 'red'}}> {passwordError}</Text>
+              : null}
 
             <TextInput
               mode="outlined"
@@ -115,36 +192,10 @@ class Signup extends Component {
               }}
               returnKeyType="next"
             />
+            {phoneError != ''
+              ? <Text style={{color: 'red'}}> {phoneError}</Text>
+              : null}
 
-            <TextInput
-              mode="outlined"
-              autoCorrect="false"
-              autoCapitalize="none"
-              ref="Email"
-              keyboardType={'email-address'}
-              style={{marginVertical: 12}}
-              label="Email"
-              value={register.email}
-              onChangeText={mail => email (mail)}
-              onSubmitEditing={event => {
-                this.refs.Password.focus ();
-              }}
-              returnKeyType="next"
-            />
-            <TextInput
-              mode="outlined"
-              autoCorrect="false"
-              ref="Password"
-              secureTextEntry
-              style={{marginVertical: 12}}
-              label="Password"
-              value={this.state.password}
-              onChangeText={password => this.setState ({password})}
-              onSubmitEditing={event => {
-                this.refs.LinkedIn.focus ();
-              }}
-              returnKeyType="next"
-            />
             <TextInput
               mode="outlined"
               autoCorrect="false"
@@ -157,18 +208,17 @@ class Signup extends Component {
             />
 
             <TouchableOpacity
+              onPress={() => this.signUp ()}
               underlayColor="transparent"
               style={styles.nextButton}
-              onPress={() => this.props.navigation.navigate ('FinalSignup')}
             >
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', color: color.white}}
               >
-                Next
+                Register
               </Text>
-              <MaterialIcons name="navigate-next" size={20} color="white" />
-            </TouchableOpacity>
 
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>

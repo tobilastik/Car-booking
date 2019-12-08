@@ -1,175 +1,109 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
+import {Text, View, ActivityIndicator, Alert} from 'react-native';
 import {
-  View,
-  Text,
-  Dimensions,
-  Platform,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  Modal,
-  SafeAreaView,
-} from 'react-native';
-import color from '../constants/color';
-import {Provider} from 'react-native-paper';
+  Container,
+  Header,
+  Body,
+  Title,
+  Content,
+  List,
+  ListItem,
+} from 'native-base';
+
+import Modal from '../components/modal';
+import DataItem from '../components/list_item';
+import {getArticles} from '../services/news';
 import PitchHeader from '../components/PitchHeader';
+import color from '../constants/color';
 
-const {height, width} = Dimensions.get ('window');
-
-class Home extends Component {
+export default class Home extends PureComponent {
   constructor (props) {
     super (props);
+
+    this._handleItemDataOnPress = this._handleItemDataOnPress.bind (this);
+    this._handleModalClose = this._handleModalClose.bind (this);
+
     this.state = {
-      activeIndex: 0,
-      moreButton: false,
+      isLoading: true,
+      data: null,
+      isError: false,
+      setModalVisible: false,
+      modalArticleData: {},
     };
   }
-  componentWillMount () {
-    this.startHeaderHeight = 80;
-    if (Platform.OS == 'android') {
-      this.startHeaderHeight = 100 + StatusBar.currentHeight;
-    }
+
+  _handleItemDataOnPress (articleData) {
+    this.setState ({
+      setModalVisible: true,
+      modalArticleData: articleData,
+    });
   }
 
-  segmentClicked = index => {
+  _handleModalClose () {
     this.setState ({
-      activeIndex: index,
+      setModalVisible: false,
+      modalArticleData: {},
     });
-  };
+  }
 
-  renderHome = () => {
-    if (this.state.activeIndex == 0) {
-      return (
-        <ScrollView contentContainerStyle={styles.updatePage}>
-          <Text
-            style={{
-              color: color.faintBlue,
-              marginTop: height / 3,
-              fontSize: 30,
-            }}
-          >
-            Updates
-          </Text>
-
-        </ScrollView>
+  componentDidMount () {
+    setInterval (() => {
+      getArticles ().then (
+        data => {
+          this.setState ({
+            isLoading: false,
+            data: data,
+          });
+        },
+        error => {
+          Alert.alert ('Error', 'Something happend, please try again');
+        }
       );
-    } else if (this.state.activeIndex == 1) {
-      return (
-        <ScrollView contentContainerStyle={styles.updatePage}>
-          <Text
-            style={{
-              color: color.faintBlue,
-              marginTop: height / 3,
-              fontSize: 30,
-            }}
-          >
-            News
-          </Text>
-        </ScrollView>
-      );
-    }
-  };
-
-  _openMenu = () => this.setState ({moreButton: true});
-
-  _closeMenu = () => this.setState ({moreButton: false});
+    });
+  }
 
   render () {
-    return (
-      <View
-        style={{
-          flex: 1,
-          marginTop: Platform.OS == 'android' ? 0 : null,
-          backgroundColor: '#f8f8f8',
-          marginTop: StatusBar.currentHeight,
-        }}
-      >
-        <PitchHeader />
-        <View>
-          <View style={{alignItems: 'center', padding: 10, marginTop: 20}}>
-            <Image
-              source={require ('../assets/images/barcode.jpg')}
-              style={{height: 200, width: 200, alignItems: 'center'}}
-            />
-          </View>
-
-          <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                paddingRight: 15,
-                paddingLeft: 15,
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => this.segmentClicked (0)}
-                active={this.state.activeIndex == 0}
-                style={[
-                  this.state.activeIndex == 0
-                    ? {backgroundColor: color.navybluebutton}
-                    : {backgroundColor: color.lightgreen},
-                  {
-                    height: 30,
-                    width: width / 2,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  },
-                ]}
-              >
-                <Text style={{color: color.white}}>Updates</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => this.segmentClicked (1)}
-                active={this.state.activeIndex == 1}
-                style={[
-                  this.state.activeIndex == 1
-                    ? {backgroundColor: color.navybluebutton}
-                    : {backgroundColor: color.lightgreen},
-                  {
-                    height: 30,
-                    width: width / 2,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  },
-                ]}
-              >
-                <Text style={{color: color.white}}>News</Text>
-              </TouchableOpacity>
-
-            </View>
-            <View>
-              {this.renderHome ()}
-
-            </View>
-          </View>
-
+    let view = this.state.isLoading
+      ? <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator animating={this.state.isLoading} color="#00f0ff" />
+          <Text style={{marginTop: 8}} children="Please wait..." />
         </View>
-
-      </View>
+      : <List
+          dataArray={this.state.data}
+          renderRow={item => {
+            return (
+              <ListItem>
+                <DataItem onPress={this._handleItemDataOnPress} data={item} />
+              </ListItem>
+            );
+          }}
+        />;
+    return (
+      <Container>
+        <PitchHeader />
+        <View
+          style={{
+            backgroundColor: color.navyblue,
+            height: 40,
+            padding: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{color: color.white, fontSize: 20}}>Updates</Text>
+        </View>
+        <Content
+          contentContainerStyle={{flex: 1, backgroundColor: '#fff'}}
+          padder={false}
+        >
+          {view}
+        </Content>
+        <Modal
+          showModal={this.state.setModalVisible}
+          articleData={this.state.modalArticleData}
+          onClose={this._handleModalClose}
+        />
+      </Container>
     );
   }
 }
-export default Home;
-
-const styles = StyleSheet.create ({
-  updatePage: {
-    alignItems: 'center',
-    marginBottom: 15,
-    backgroundColor: color.inputgray,
-    height: '100%',
-  },
-  modalContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 50,
-    backgroundColor: 'red',
-  },
-  modalStyle: {
-    // marginLeft: width - 30,
-    //top: -80,
-  },
-});
