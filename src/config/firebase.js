@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 
 var firebaseConfig = {
-  apiKey: 'AIzaSyAxcH8AkeccwDq2n2iy2cah8VZ1qe76NmA',
+  apiKey: process.env.KEY,
   authDomain: 'thepitchapp-bf937.firebaseapp.com',
   databaseURL: 'https://thepitchapp-bf937.firebaseio.com',
   projectId: 'thepitchapp-bf937',
